@@ -1,5 +1,6 @@
 class DocsController < ApplicationController
   before_action :find_doc, only: [:show, :edit, :update, :destroy]
+  before_filter :authenticate_user!
 
   def index
     @docs = Doc.all.order("created_at DESC")
@@ -9,11 +10,11 @@ class DocsController < ApplicationController
   end
 
   def new
-    @doc = Doc.new
+    @doc = current_user.docs.build   #document created by the current user
   end
 
   def create
-    @doc = Doc.new(doc_params)
+    @doc = current_user.docs.build(doc_params)
 
     if @doc.save
       redirect_to @doc
